@@ -12,8 +12,7 @@ function HomePage() {
         const response=await getMovies();
         const moviesData=response.data;
         const categories=Array.from(new Set(moviesData.map(m=>m.category)))
-        console.log(moviesData);
-        console.log(categories);
+
         setCategories(categories)
         setMovies(moviesData)
 
@@ -21,11 +20,35 @@ function HomePage() {
     useEffect(() => {
         fetchMovies();
       },[]);
-    
+    if(!movies){
+        return(<div>loading...</div>)
+    }
+    const handleSelectCategory=(category)=>{
+
+        if (selectedCategories.includes(category)){
+            setSelectedCategories(prev=>prev.filter(c=>c!=category))
+        }
+        else{
+            setSelectedCategories(prev=>[...prev,category])
+        }
+    }
   return (
     <div className='home-page'>
-        
+        <div className='left-side'> 
+            <div className='categories'>
+                {categories.map(category=>(
+                    <div 
+                    className={`category ${'selected'?selectedCategories.includes(category):''}`}
+                    onClick={()=>handleSelectCategory(category)}
+                    >
+                    {category}
+                    </div>
+                ))}
+            </div>
+        </div>
+        <div className='right-side'> 
 
+        </div>
     </div>
   )
 }
