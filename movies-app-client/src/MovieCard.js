@@ -9,8 +9,6 @@ function MovieCard({movie}) {
     <div className='movie-card-content'>
         <h1 className='movie-card-name'>{movie.name}</h1>
         <div className='movie-card-category'>{movie.category}</div>
-        <p className='movie-card-summary'>{movie.summary}</p>
-
     </div></Link>
     </div>
       )

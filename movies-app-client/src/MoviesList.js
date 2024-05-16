@@ -6,7 +6,7 @@ function MoviesList({relevantMovies}) {
     return <div>Loading movies...</div>;
   }
   return (
-    <div className='moviesList'>
+    <div className='movies-list-container'>
         {relevantMovies.map(movie=>(
             <MovieCard key={movie.id} movie={movie}/>
         ))}

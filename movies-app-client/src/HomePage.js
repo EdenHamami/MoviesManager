@@ -5,22 +5,23 @@ import MoviesList from "./MoviesList";
 
 function HomePage() {
   const [movies, setMovies] = useState(null);
-  const [relevantMovies, setRelevantMovies] = useState(null);
+  const [relevantMovies, setRelevantMovies] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [sortBy, setSortBy] = useState("name");
   const [searchInput, setSearchInput] = useState("");
 
-  const fetchMovies = async () => {
-    const response = await getMovies();
-    const moviesData = response.data;
-    const categories = Array.from(new Set(moviesData.map((m) => m.category)));
-
-    setCategories(categories);
-    setMovies(moviesData);
-  };
-
   useEffect(() => {
+    const fetchMovies = async () => {
+      const response = await getMovies();
+      const moviesData = response.data;
+      const categories = Array.from(new Set(moviesData.map((m) => m.category)));
+
+      setCategories(categories);
+      setMovies(moviesData);
+      setRelevantMovies(moviesData); // Initial load
+    };
+
     fetchMovies();
   }, []);
 
@@ -28,7 +29,7 @@ function HomePage() {
     if (movies) {
       let filteredMovies = movies.filter(
         (movie) =>
-          movie.name.toLowerCase().startsWith(searchInput.toLowerCase()) &&
+          movie.name.toLowerCase().includes(searchInput.toLowerCase()) &&
           (selectedCategories.length === 0 ||
             selectedCategories.includes(movie.category))
       );
@@ -45,10 +46,6 @@ function HomePage() {
     }
   }, [movies, searchInput, sortBy, selectedCategories]);
 
-  if (!movies) {
-    return <div>loading...</div>;
-  }
-
   const handleSelectCategory = (category) => {
     if (selectedCategories.includes(category)) {
       setSelectedCategories((prev) => prev.filter((c) => c !== category));
@@ -56,6 +53,10 @@ function HomePage() {
       setSelectedCategories((prev) => [...prev, category]);
     }
   };
+
+  if (!movies) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="home-page">
@@ -81,6 +82,7 @@ function HomePage() {
             className="search-movie-input"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
+            placeholder="Search movies..."
           />
           <select
             className="sort-by"
