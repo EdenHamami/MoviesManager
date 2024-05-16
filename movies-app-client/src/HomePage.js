@@ -5,7 +5,7 @@ import MoviesList from "./MoviesList";
 
 function HomePage() {
   const [movies, setMovies] = useState(null);
-  const [relevatMovies, setRelevantMovies] = useState(null);
+  const [relevantMovies, setRelevantMovies] = useState(null);
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [sortBy, setSortBy] = useState("name");
@@ -19,40 +19,44 @@ function HomePage() {
     setCategories(categories);
     setMovies(moviesData);
   };
+
   useEffect(() => {
     fetchMovies();
   }, []);
 
   useEffect(() => {
-    if(movies){
-        let filteredMovies = movies.filter(movie =>
-            movie.name.toLowerCase().startsWith(searchInput.toLowerCase()) &&
-            (selectedCategories.length === 0 || selectedCategories.includes(movie.category))
-          );
-      
-          const sorter = {
-            'name': (a, b) => a.name.localeCompare(b.name),
-            'year': (a, b) => a.yearOfRelease - b.yearOfRelease,
-            'duration': (a, b) => a.duration - b.duration
-          };
-      
-          filteredMovies.sort(sorter[sortBy]);
-      
-          setRelevantMovies(filteredMovies);
-    }
-}, [movies,searchInput,sortBy,selectedCategories]);
+    if (movies) {
+      let filteredMovies = movies.filter(
+        (movie) =>
+          movie.name.toLowerCase().startsWith(searchInput.toLowerCase()) &&
+          (selectedCategories.length === 0 ||
+            selectedCategories.includes(movie.category))
+      );
 
+      const sorter = {
+        name: (a, b) => a.name.localeCompare(b.name),
+        year: (a, b) => a.yearOfRelease - b.yearOfRelease,
+        duration: (a, b) => a.duration - b.duration,
+      };
+
+      filteredMovies.sort(sorter[sortBy]);
+
+      setRelevantMovies(filteredMovies);
+    }
+  }, [movies, searchInput, sortBy, selectedCategories]);
 
   if (!movies) {
     return <div>loading...</div>;
   }
+
   const handleSelectCategory = (category) => {
     if (selectedCategories.includes(category)) {
-      setSelectedCategories((prev) => prev.filter((c) => c != category));
+      setSelectedCategories((prev) => prev.filter((c) => c !== category));
     } else {
       setSelectedCategories((prev) => [...prev, category]);
     }
   };
+
   return (
     <div className="home-page">
       <div className="left-side">
@@ -61,7 +65,7 @@ function HomePage() {
             <div
               key={category}
               className={`category ${
-                "selected" ? selectedCategories.includes(category) : ""
+                selectedCategories.includes(category) ? "selected" : ""
               }`}
               onClick={() => handleSelectCategory(category)}
             >
@@ -89,7 +93,7 @@ function HomePage() {
           </select>
         </div>
         <div className="right-side-bottom">
-<MoviesList relevatMovies={relevatMovies}/>
+          <MoviesList relevantMovies={relevantMovies} />
         </div>
       </div>
     </div>

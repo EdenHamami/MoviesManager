@@ -1,10 +1,13 @@
 import React from 'react'
 import MovieCard from './MovieCard'
 import "./moviesList.css"
-function MoviesList({relevatMovies}) {
+function MoviesList({relevantMovies}) {
+  if (!relevantMovies) {
+    return <div>Loading movies...</div>;
+  }
   return (
     <div className='moviesList'>
-        {relevatMovies.map(movie=>(
+        {relevantMovies.map(movie=>(
             <MovieCard key={movie.id} movie={movie}/>
         ))}
     </div>
